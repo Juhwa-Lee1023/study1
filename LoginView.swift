@@ -9,6 +9,8 @@ import SwiftUI
 import Firebase
 
 struct LoginView: View {
+    @EnvironmentObject var authModel : AuthState
+    @Environment(\.presentationMode) var presentationMode
     @State var email = ""
     @State var password = ""
     @State var showSignup = false
@@ -20,7 +22,8 @@ struct LoginView: View {
                 SecureField("password", text: $password)
                 HStack{
                     Button(action : {
-                        login()
+                        authModel.login(id: email, password: password)
+                        presentationMode.wrappedValue.dismiss()
                     }){
                         ZStack{
                             RoundedRectangle(cornerRadius: 10)
@@ -47,18 +50,6 @@ struct LoginView: View {
             .sheet(isPresented: $showSignup){
                 SignupView()
             }
-    }
-    
-    func login(){
-        Auth.auth().signIn(withEmail: email, password: password){ (Result, Error) in
-            if Error != nil{
-                print("fail login")
-            } else{
-                print("sucess login")
-            }
-            
-           
-        }
     }
 }
 

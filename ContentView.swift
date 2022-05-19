@@ -9,43 +9,70 @@ import SwiftUI
 import Firebase
 
 struct ContentView: View {
-
+    @EnvironmentObject var authModel : AuthState
+    @ObservedObject var todomodel = todoModel()
     @State var showLogin = false
-    @State var i = 0
-    @State var c = false
+    @State var showCreate = false
+    
     
     var body: some View {
             VStack{
                 HStack{
                     Spacer()
                     Button(action:{
-                        //add action
+                        showLogin.toggle()
                     }){
+                            
                         ZStack{
-                           RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.red ,lineWidth: 10)
-                            HStack{
-                                Image(systemName: "person")
-                                    .foregroundColor(Color.blue)
-                            }
-                        }.frame(width: 40, height: 60)
-                    }
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.red, lineWidth: 3)
+                                HStack{
+                                    Image(systemName: "person")
+                                        .foregroundColor(Color.blue)
+                                }
+                            }.frame(width: 40, height: 40)
+                            
+                        }
+                    
                 }
-                List(todo){ todos in
-                    HStack{
-                        Button(action:{
-                            c.toggle()
-                            i += 1
-                        })
-                        {
-                            Text("\(todos.name)")
+                Spacer()
+                HStack{
+                    Spacer()
+                    Button(action:{
+                        showCreate.toggle()
+                    }){
+                            
+                        ZStack{
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.red, lineWidth: 3)
+                                HStack{
+                                    Text("도전 만들러 가기")
+                                        .foregroundColor(Color.blue)
+                                }
+                            }.frame(width: 120, height: 40)
+                            
+                        }
+                    
+                }
+                Spacer()
+                HStack
+                {
+                    ScrollView(.horizontal){
+                        HStack{
+                            ForEach(todomodel.todoViewModels) { todoviewModel in
+                                todoReadView(todoviewModel: todoviewModel)
+                            }
                         }
                     }
-                    
-                    
                 }
-            }.sheet(isPresented: $c){
-                DetailView(i: i)
+                
+                
+                
+            }.sheet(isPresented: $showLogin){
+                LoginView()
+            }
+            .sheet(isPresented: $showCreate){
+                todoCreateView(todomodel: todoModel())
             }
     }
     
@@ -54,7 +81,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(todomodel: todoModel())
     }
 }
 

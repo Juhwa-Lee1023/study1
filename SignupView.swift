@@ -9,6 +9,7 @@ import SwiftUI
 import Firebase
 
 struct SignupView: View {
+    @EnvironmentObject var authModel : AuthState
     @State var email = ""
     @State var password = ""
     @Environment(\.presentationMode) var presentationMode
@@ -18,7 +19,7 @@ struct SignupView: View {
             TextField("email", text: $email)
             SecureField("password", text: $password)
             Button(action : {
-                SignUp()
+                authModel.signup(id: email, password: password)
                 presentationMode.wrappedValue.dismiss()
             }){
                 ZStack{
@@ -30,10 +31,6 @@ struct SignupView: View {
                 }.frame(width: 60, height: 30)
             }
         }
-    }
-    
-    func SignUp(){
-        Auth.auth().createUser(withEmail: email, password: password)
     }
 }
 
