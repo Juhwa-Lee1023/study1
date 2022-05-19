@@ -9,55 +9,47 @@ import SwiftUI
 import Firebase
 
 struct ContentView: View {
-    @State var email = ""
-    @State var password = ""
-    @State var showSignup = false
-    @State var showAlert = false
+
+    @State var showLogin = false
+    @State var i = 0
+    @State var c = false
     
     var body: some View {
             VStack{
-                TextField("email", text: $email)
-                SecureField("password", text: $password)
                 HStack{
-                    Button(action : {
-                        login()
+                    Spacer()
+                    Button(action:{
+                        //add action
                     }){
                         ZStack{
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(lineWidth: 3)
+                           RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.red ,lineWidth: 10)
                             HStack{
-                                Text("로그인")
+                                Image(systemName: "person")
+                                    .foregroundColor(Color.blue)
                             }
-                        }.frame(width: 60, height: 30)
-                    }
-                    Button(action : {
-                        showSignup.toggle()
-                    }){
-                        ZStack{
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(lineWidth: 3)
-                            HStack{
-                                Text("회원가입")
-                            }
-                        }.frame(width: 60, height: 30)
+                        }.frame(width: 40, height: 60)
                     }
                 }
-                
-            }
-            .sheet(isPresented: $showSignup){
-                SignupView()
+                List(todo){ todos in
+                    HStack{
+                        Button(action:{
+                            c.toggle()
+                            i += 1
+                        })
+                        {
+                            Text("\(todos.name)")
+                        }
+                    }
+                    
+                    
+                }
+            }.sheet(isPresented: $c){
+                DetailView(i: i)
             }
     }
     
-    func login(){
-        Auth.auth().signIn(withEmail: email, password: password){ (Result, Error) in
-            if Error != nil{
-                print("fail login")
-            } else{
-                print("sucess login")
-            }
-        }
-    }
+
 }
 
 struct ContentView_Previews: PreviewProvider {
@@ -65,3 +57,5 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
+
+
